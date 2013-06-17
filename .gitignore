@@ -1,1 +1,3 @@
-photos*
+photos.json
+photos/
+photos-*/

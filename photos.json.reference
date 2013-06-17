@@ -1,0 +1,18 @@
+{
+    "photos": [
+        {
+            "url": "photos/IMG_20130425_124548.jpg",
+            "title": "Une photo",
+            "folder": "photos",
+            "latitude": 31.916494,
+            "longitude": 35.242704
+        },
+        {
+            "url": "photos/f1/IMG_20130424_135957.jpg",
+            "title": "Une photo",
+            "folder": "photos/f1",
+            "latitude": 31.828772,
+            "longitude": 35.248599
+        }
+    ]
+}
