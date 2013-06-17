@@ -1,0 +1,85 @@
+#!/bin/bash
+# build_data output-file photos-directory
+
+if [ $# != 1 ]
+then
+  echo "Usage: $(basename $0) <photos-directory>"
+  exit 1
+fi
+
+PHOTOS_ROOT="${1%/}"
+PHOTOS_SMALL_ROOT="${PHOTOS_ROOT}-small"
+PHOTOS_PREVIEW_ROOT="${PHOTOS_ROOT}-preview"
+OUT="photos.json"
+
+if [ -e "$OUT" ]
+then
+  echo "File '$OUT' already exists. Not overwriting."
+  exit 1
+fi
+
+mkdir -p "$PHOTOS_SMALL_ROOT"
+mkdir -p "$PHOTOS_PREVIEW_ROOT"
+echo "{" > "$OUT"
+echo "    \"photos\": [" >> "$OUT"
+
+setcomma=0
+
+while IFS= read -d $'\0' -r f
+do
+  echo -n "Processing file '$f'... "
+
+  if ! exiftool -GPSLatitude "$f" | grep -q GPS
+  then
+    echo "has no GPS info"
+    continue
+  fi
+
+  directory="${f%/*}"
+  filename="${f##*/}"
+  filetitle="${filename%.*}"
+  extension="${filename##*.}"
+  subdirectory="${directory#$PHOTOS_ROOT}"
+  size="$(exiftool -ImageSize "$f" | awk '{print $4}')px"
+
+  smalldirectory="$PHOTOS_SMALL_ROOT$subdirectory"
+  smallf="$smalldirectory/$filetitle.small.$extension"
+  mkdir -p "$smalldirectory"
+  convert "$f" -resize 30% "$smallf"
+  smallsize="$(exiftool -ImageSize "$smallf" | awk '{print $4}')px"
+
+  previewdirectory="$PHOTOS_PREVIEW_ROOT$subdirectory"
+  previewf="$previewdirectory/$filetitle.preview.$extension"
+  mkdir -p "$previewdirectory"
+  convert "$f" -resize 400x300 "$previewf"
+
+  latitude="$(exiftool -GPSLatitude -c "+%.6f" "$f" | awk '{print $4}')"
+  latitude=${latitude#+}
+  longitude="$(exiftool -GPSLongitude -c "+%.6f" "$f" | awk '{print $4}')"
+  longitude=${longitude#+}
+
+  if [ $setcomma -eq 1 ]
+  then
+    echo "," >> "$OUT"
+  else
+    setcomma=1
+  fi
+
+  echo "        {" >> "$OUT"
+  echo "            \"url_full\": \"$f\"," >> "$OUT"
+  echo "            \"url_small\": \"$smallf\"," >> "$OUT"
+  echo "            \"url_preview\": \"$previewf\"," >> "$OUT"
+  echo "            \"title\": \"$filetitle\"," >> "$OUT"
+  echo "            \"folder\": \"$directory\"," >> "$OUT"
+  echo "            \"latitude\": $latitude," >> "$OUT"
+  echo "            \"longitude\": $longitude," >> "$OUT"
+  echo "            \"size_full\": \"$size\"," >> "$OUT"
+  echo "            \"size_small\": \"$smallsize\"" >> "$OUT"
+  echo -n "        }" >> "$OUT"
+
+  echo "OK"
+done < <(find $PHOTOS_ROOT -type f -print0)
+
+echo >> "$OUT"
+echo "    ]" >> "$OUT"
+echo "}" >> "$OUT"

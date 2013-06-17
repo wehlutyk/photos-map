@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+  </head>
+  <body>
+    <div id="map" style="height: 800px"></div>
+    <script src="js/jquery-2.0.2.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+    <script>
+      $(function() {
+        var photosMap = {};
+
+        $.ajax({
+          url: "photos.json",
+          context: photosMap
+        }).done(function(response) {
+          map = L.map('map').setView([51.505, -0.09], 13);
+          L.tileLayer('http://{s}.tile.cloudmade.com/37ea7ab231f4485899a07a6728d83544/997/256/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+            maxZoom: 18
+          }).addTo(map);
+
+          var p, marker, popup,
+              l = response.photos.length,
+              sum_latitudes = 0,
+              sum_longitudes = 0;
+
+          for (var i = 0; i < l; i++) {
+            p = response.photos[i];
+            sum_latitudes += p.latitude;
+            sum_longitudes += p.longitude;
+            marker = L.marker([p.latitude, p.longitude],
+              {opacity: 0.8, riseOnHover: true}).addTo(map);
+            marker.bindPopup(
+              '<strong>' + p.title + '</strong><br>' +
+              '<em>In folder "' + p.folder + '"</em><br><br>' +
+              '<a href="' + p.url_small + '">' + '<img src="' + p.url_preview + '" height="300" width="400" alt="' + p.title + '"/></a><br><br>' +
+              '<em>View in <a href="' + p.url_small + '">small size (' + p.size_small + ')</a>, ' +
+              '<a href="' + p.url_full + '">full size (' + p.size_full + ')</a></em>',
+              {maxWidth: 500}
+            );
+          }
+
+          map.setView([sum_latitudes/l, sum_longitudes/l], 10)
+        }).fail(function() {
+          alert("Oops, there was an error loading the photos' information...")}
+        );
+      });
+    </script>
+  </body>
+</html>
