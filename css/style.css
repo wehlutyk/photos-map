@@ -1,0 +1,14 @@
+#map {
+  height: 800px;
+}
+
+#control {
+  float: right;
+  width: 12em;
+  padding: 1em;
+}
+
+.datepicker {
+  width: 8em;
+  float: right;
+}

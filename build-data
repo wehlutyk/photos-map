@@ -38,6 +38,12 @@ do
     continue
   fi
 
+  if file --mime-type "$f" | grep -q "video/[^ ]\+$"
+  then
+    echo "is a video"
+    continue
+  fi
+
   directory="${f%/*}"
   filename="${f##*/}"
   filetitle="${filename%.*}"
@@ -60,6 +66,7 @@ do
   latitude=${latitude#+}
   longitude="$(exiftool -GPSLongitude -c "+%.6f" "$f" | awk '{print $4}')"
   longitude=${longitude#+}
+  date="$(exiftool -DateTimeOriginal "$f" | awk {'print $4'} | sed 's_\([0-9]\+\):\([0-9]\+\):\([0-9]\+\)_\3/\2/\1_')"
 
   if [ $setcomma -eq 1 ]
   then
@@ -70,14 +77,15 @@ do
 
   echo "        {" >> "$OUT"
   echo "            \"url_full\": \"$f\"," >> "$OUT"
+  echo "            \"size_full\": \"$size\"," >> "$OUT"
   echo "            \"url_small\": \"$smallf\"," >> "$OUT"
+  echo "            \"size_small\": \"$smallsize\"," >> "$OUT"
   echo "            \"url_preview\": \"$previewf\"," >> "$OUT"
   echo "            \"title\": \"$filetitle\"," >> "$OUT"
   echo "            \"folder\": \"$directory\"," >> "$OUT"
   echo "            \"latitude\": $latitude," >> "$OUT"
   echo "            \"longitude\": $longitude," >> "$OUT"
-  echo "            \"size_full\": \"$size\"," >> "$OUT"
-  echo "            \"size_small\": \"$smallsize\"" >> "$OUT"
+  echo "            \"date\": \"$date\"" >> "$OUT"
   echo -n "        }" >> "$OUT"
 
   echo "OK"
