@@ -44,6 +44,7 @@ $(function() {
     dateFormat: 'dd/mm/yy',
     onClose: $.proxy(onCloseDateFrom, photosMap)
   });
+
   $('#date-until').datepicker({
     dateFormat: 'dd/mm/yy',
     onClose: $.proxy(onCloseDateUntil, photosMap)
@@ -78,13 +79,14 @@ $(function() {
         {opacity: 0.8, riseOnHover: true}).addTo(this.map);
       marker.bindPopup(
         '<h3>' + p.title + '</h3>' +
-        '<p><strong>' + this.buildDate(p.date).toLocaleDateString() + '</strong> ' +
-        '— <em>In folder "' + p.folder + '"</em></p>' +
+        '<p><strong>' + p.date + '</strong> ' +
+        '— <em>In folder <a href="' + p.folder + '">' + p.folder + '</a></em></p>' +
         '<p><a href="' + p.url_small + '">' + '<img src="' + p.url_preview + '" height="300" width="400" alt="' + p.title + '"/></a></p>' +
         '<p><em>View in <a href="' + p.url_small + '">small size (' + p.size_small + ')</a>, ' +
         '<a href="' + p.url_full + '">full size (' + p.size_full + ')</a></em></p>',
         {maxWidth: 500}
       );
+
       this.markers.push(marker);
       this.shown.push(true);
     }
