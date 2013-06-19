@@ -2,23 +2,11 @@
   height: 800px;
 }
 
-#control {
-  float: right;
-  width: 15em;
-  padding: 1em;
+.container-fluid {
+  padding-left: 0;
 }
 
-.datepicker {
-  width: 8em;
-  float: right;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}
-
-#summary div p {
-  padding: 0;
-  margin: 0;
-}
+/*body {*/
+  /*margin: 0;*/
+  /*padding: 0;*/
+/*}*/
