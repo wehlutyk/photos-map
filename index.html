@@ -10,18 +10,40 @@
   <body>
     <div class="container-fluid">
       <div class="row-fluid">
+
         <div class="span10">
           <div id="map"></div>
         </div>
+
         <div class="span2">
-          <div id="control">
-            <h2>Date range</h2>
-            <div class="alert alert-info" data-dismiss="alert">
-              <button type="button" class="close" data-dismiss="alert">&times;</button>
-              You can restrict which photos are shown
-            </div>
-            <p>From</p> <input type="text" placeholder="Forever in the past" class="datepicker" id="date-from" />
-            <p>Until</p> <input type="text" placeholder="Forever in the future" class="datepicker" id="date-until" />
+          <h2>Date range</h2>
+          <div class="alert alert-info" data-dismiss="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            You can restrict which photos are shown
+          </div>
+          <div id="control" class="well">
+            <p>From</p> <input type="text" placeholder="Forever in the past" class="span12" id="date-from" />
+            <p>Until</p> <input type="text" placeholder="Forever in the future" class="span12" id="date-until" />
+          </div>
+
+          <h2>Photo list</h2>
+          <div id="navigation-folders" class="well">
+            <ul class="nav nav-list">
+              <li class="nav-header">Folders</li>
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#">Library</a></li>
+              <li><a href="#">More</a></li>
+            </ul>
+          </div>
+
+          <div id="navigation-photos">
+            <table class="table table-condensed table-hover">
+              <tbody>
+                <tr><td>Photo 1 mlj lmkj mlkj mkl j mlkj mlk j mlkj mlkj m lj mlkj mlkj mlkj</td></tr>
+                <tr><td>Photo 2</td></tr>
+                <tr><td>Photo 3</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

@@ -6,6 +6,14 @@
   padding-left: 0;
 }
 
+#navigation-folders {
+ padding: 8px 0;
+}
+
+#navigation-photos .well {
+ padding: 8px 0;
+}
+
 /*body {*/
   /*margin: 0;*/
   /*padding: 0;*/
