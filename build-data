@@ -94,3 +94,9 @@ done < <(find $PHOTOS_ROOT -type f -print0)
 echo >> "$OUT"
 echo "    ]" >> "$OUT"
 echo "}" >> "$OUT"
+
+echo -n "Zipping folders... "
+echo -n "full... "
+zip -r "$PHOTOS_ROOT".zip . -i "$PHOTOS_ROOT/*"
+echo -n "small... "
+zip -r "$PHOTOS_SMALL_ROOT".zip . -i "$PHOTOS_SMALL_ROOT/*"
