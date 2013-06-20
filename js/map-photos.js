@@ -49,8 +49,12 @@ $(function() {
 
     for (var i in this.folders[folderName]) {
       k = this.folders[folderName][i];
-      photoRow = $('<tr></tr>', {'class': 'photo-name'});
+      photoRow = $('<tr></tr>', {'class': 'photo-name clickable'});
       photoRow.html('<td>' + this.ps[k].title + '</td>');
+      if (! this.shown[k]) {
+        photoRow.addClass('error');
+        photoRow.removeClass('clickable');
+      }
       photosTable.append(photoRow);
       this.markers[k].setIcon(this.iconActive);
     }
@@ -81,11 +85,13 @@ $(function() {
   var onCloseDateFrom = function(dateString) {
     this.dateFrom = this.buildDate(dateString);
     this.showHidePhotos();
+    $('#navigation-folders-list').children('.active').children().trigger('click');
   };
 
   var onCloseDateUntil = function(dateString) {
     this.dateUntil = this.buildDate(dateString);
     this.showHidePhotos();
+    $('#navigation-folders-list').children('.active').children().trigger('click');
   };
 
   $('#date-from').datepicker({
