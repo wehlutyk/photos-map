@@ -80,15 +80,25 @@ $(function() {
     }
 
     $('#photos-table-content').fadeIn(400);
-  }
+  };
 
-  var onCloseDateFrom = function(dateString) {
+  photosMap.onClickPhotoName = function(event) {
+    event.preventDefault();
+
+    var photoRow = $(event.target);
+    var photoRowIndex = photoRow.parent().index();
+    var folderName = $('#navigation-folders-list').children('.active').children().html();
+    var markerIndex = this.folders[folderName][photoRowIndex];
+    this.markers[markerIndex].openPopup();
+  };
+
+  photosMap.onCloseDateFrom = function(dateString) {
     this.dateFrom = this.buildDate(dateString);
     this.showHidePhotos();
     $('#navigation-folders-list').children('.active').children().trigger('click');
   };
 
-  var onCloseDateUntil = function(dateString) {
+  photosMap.onCloseDateUntil = function(dateString) {
     this.dateUntil = this.buildDate(dateString);
     this.showHidePhotos();
     $('#navigation-folders-list').children('.active').children().trigger('click');
@@ -96,12 +106,12 @@ $(function() {
 
   $('#date-from').datepicker({
     dateFormat: 'dd/mm/yy',
-    onClose: $.proxy(onCloseDateFrom, photosMap)
+    onClose: $.proxy(photosMap.onCloseDateFrom, photosMap)
   });
 
   $('#date-until').datepicker({
     dateFormat: 'dd/mm/yy',
-    onClose: $.proxy(onCloseDateUntil, photosMap)
+    onClose: $.proxy(photosMap.onCloseDateUntil, photosMap)
   });
 
   $.ajax({
@@ -165,9 +175,12 @@ $(function() {
       folderList.append(folderItem);
     }
     folderList.on('click', '.folder-name', $.proxy(this.onClickFolderName, this));
+    $('#navigation-photos').on('click', '.photo-name.clickable', $.proxy(this.onClickPhotoName, this));
 
     // Show the map
     this.map.setView([sum_latitudes/this.l, sum_longitudes/this.l], 10)
+    this.onCloseDateFrom($('#date-from').val());
+    this.onCloseDateUntil($('#date-until').val());
   }).fail(function() {
     alert("Oops, there was an error downloading the photo data... Are you well connected to the internet?")}
   );
