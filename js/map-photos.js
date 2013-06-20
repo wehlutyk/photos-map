@@ -35,7 +35,7 @@ $(function() {
 
     var folderLink = $(event.target),
         photoRow, k;
-    var folderLi = $(folderLink).parent();
+    var folderLi = folderLink.parent();
     folderLi.parent().children('.active').toggleClass('active');
     folderLi.toggleClass('active');
 
