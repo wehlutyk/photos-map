@@ -30,17 +30,10 @@ $(function() {
     }
   };
 
-  photosMap.onClickFolderName = function(event) {
-    event.preventDefault();
-
-    var folderLink = $(event.target),
-        photoRow, k;
-    var folderLi = folderLink.parent();
-    folderLi.parent().children('.active').toggleClass('active');
-    folderLi.toggleClass('active');
-
-    var folderName = folderLink.html();
-    var photosTable = $('#photos-table');
+  photosMap.folderListUpdate = function() {
+    var photoRow, k;
+    var folderName = this.folderLink.html();
+    var photosTable = $('#photos-table-content');
     photosTable.html('');
 
     for (i in this.folders[folderName]) {
@@ -49,6 +42,26 @@ $(function() {
       photoRow.html('<td>' + this.ps[k].title + '</td>');
       photosTable.append(photoRow);
     }
+    $('#photos-table-content').dequeue();
+  };
+
+  photosMap.onClickFolderName = function(event) {
+    event.preventDefault();
+
+    this.folderLink = $(event.target);
+    var folderLi = this.folderLink.parent();
+    folderLi.parent().children('.active').toggleClass('active');
+    folderLi.toggleClass('active');
+
+    if (! this.folderTableShown) {
+      this.folderTableShown = true;
+      this.folderListUpdate();
+      $('#photos-table-head').fadeIn(400);
+    } else {
+      $('#photos-table-content').fadeOut(400, $.proxy(this.folderListUpdate, this));
+    }
+
+    $('#photos-table-content').fadeIn(400);
   }
 
   var onCloseDateFrom = function(dateString) {
