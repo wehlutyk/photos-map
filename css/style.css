@@ -6,12 +6,12 @@
   padding-left: 0;
 }
 
-#navigation-folders {
+.navigation {
  padding: 8px 0;
 }
 
-#navigation-photos .well {
- padding: 8px 0;
+.clickable {
+  cursor: pointer;
 }
 
 /*body {*/

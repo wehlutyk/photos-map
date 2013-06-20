@@ -54,12 +54,14 @@ $(function() {
     url: "photos.json",
     context: photosMap
   }).done(function(response) {
+    // Create base map
     this.map = L.map('map');
     L.tileLayer('http://{s}.tile.cloudmade.com/37ea7ab231f4485899a07a6728d83544/997/256/{z}/{x}/{y}.png', {
       attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
       maxZoom: 25
     }).addTo(this.map);
 
+    // Add all markers
     var p, marker,
         sum_latitudes = 0,
         sum_longitudes = 0;
@@ -67,6 +69,8 @@ $(function() {
     this.ps = [],
     this.markers = [];
     this.shown = [];
+    this.folders = {};
+    this.folderNames = [];
 
     for (var i = 0; i < this.l; i++) {
       p = response.photos[i];
@@ -81,7 +85,7 @@ $(function() {
         '<h3>' + p.title + '</h3>' +
         '<p><strong>' + p.date + '</strong> ' +
         '— <em>In folder <a href="' + p.folder + '">' + p.folder + '</a></em></p>' +
-        '<p><a href="' + p.url_small + '">' + '<img src="' + p.url_preview + '" height="300" width="400" alt="' + p.title + '"/></a></p>' +
+        '<p><a href="' + p.url_small + '">' + '<img src="' + p.url_preview + '" height="300" width="400" alt="' + p.title + '" /></a></p>' +
         '<p><em>View in <a href="' + p.url_small + '">small size (' + p.size_small + ')</a>, ' +
         '<a href="' + p.url_full + '">full size (' + p.size_full + ')</a></em></p>',
         {maxWidth: 500}
@@ -89,6 +93,22 @@ $(function() {
 
       this.markers.push(marker);
       this.shown.push(true);
+
+      if (! this.folders.hasOwnProperty(p.folder)) {
+        this.folders[p.folder] = [];
+        this.folderNames.push(p.folder);
+      }
+      this.folders[p.folder].push(i);
+    }
+
+    // Fill up the folders
+    this.folderNames.sort();
+    var folderList = $('#navigation-folders-list'),
+        folderItem;
+    for (var i in this.folderNames) {
+      folderItem = $('<li></li>');
+      folderItem.html('<a href="#">' + this.folderNames[i] + '</a>');
+      folderList.append(folderItem);
     }
 
     this.map.setView([sum_latitudes/this.l, sum_longitudes/this.l], 10)
