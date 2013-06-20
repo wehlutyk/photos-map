@@ -30,18 +30,31 @@ $(function() {
     }
   };
 
+  photosMap.iconActive = new L.Icon.Default({iconUrl: 'lib/leaflet/images/marker-icon-active.png'});
+  photosMap.iconInactive = new L.Icon.Default();
+
   photosMap.folderListUpdate = function() {
     var photoRow, k;
     var folderName = this.folderLink.html();
     var photosTable = $('#photos-table-content');
     photosTable.html('');
 
-    for (i in this.folders[folderName]) {
+    if (this.oldFolderLi.length) {
+      var oldFolderName = this.oldFolderLi.children().html();
+      for (var i in this.folders[oldFolderName]) {
+        k = this.folders[oldFolderName][i];
+        this.markers[k].setIcon(this.iconInactive);
+      }
+    }
+
+    for (var i in this.folders[folderName]) {
       k = this.folders[folderName][i];
       photoRow = $('<tr></tr>', {'class': 'photo-name'});
       photoRow.html('<td>' + this.ps[k].title + '</td>');
       photosTable.append(photoRow);
+      this.markers[k].setIcon(this.iconActive);
     }
+
     $('#photos-table-content').dequeue();
   };
 
@@ -50,7 +63,8 @@ $(function() {
 
     this.folderLink = $(event.target);
     var folderLi = this.folderLink.parent();
-    folderLi.parent().children('.active').toggleClass('active');
+    this.oldFolderLi = folderLi.parent().children('.active');
+    this.oldFolderLi.toggleClass('active');
     folderLi.toggleClass('active');
 
     if (! this.folderTableShown) {
