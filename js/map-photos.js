@@ -30,6 +30,27 @@ $(function() {
     }
   };
 
+  photosMap.onClickFolderName = function(event) {
+    event.preventDefault();
+
+    var folderLink = $(event.target),
+        photoRow, k;
+    var folderLi = $(folderLink).parent();
+    folderLi.parent().children('.active').toggleClass('active');
+    folderLi.toggleClass('active');
+
+    var folderName = folderLink.html();
+    var photosTable = $('#photos-table');
+    photosTable.html('');
+
+    for (i in this.folders[folderName]) {
+      k = this.folders[folderName][i];
+      photoRow = $('<tr></tr>', {'class': 'photo-name'});
+      photoRow.html('<td>' + this.ps[k].title + '</td>');
+      photosTable.append(photoRow);
+    }
+  }
+
   var onCloseDateFrom = function(dateString) {
     this.dateFrom = this.buildDate(dateString);
     this.showHidePhotos();
@@ -101,18 +122,20 @@ $(function() {
       this.folders[p.folder].push(i);
     }
 
-    // Fill up the folders
+    // Fill up the folders and photos
     this.folderNames.sort();
     var folderList = $('#navigation-folders-list'),
         folderItem;
     for (var i in this.folderNames) {
       folderItem = $('<li></li>');
-      folderItem.html('<a href="#">' + this.folderNames[i] + '</a>');
+      folderItem.html('<a href="#" class="folder-name">' + this.folderNames[i] + '</a>');
       folderList.append(folderItem);
     }
+    folderList.on('click', '.folder-name', $.proxy(this.onClickFolderName, this));
 
+    // Show the map
     this.map.setView([sum_latitudes/this.l, sum_longitudes/this.l], 10)
   }).fail(function() {
-    alert("Oops, there was an error loading the photos' information...")}
+    alert("Oops, there was an error downloading the photo data... Are you well connected to the internet?")}
   );
 });
