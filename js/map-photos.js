@@ -50,7 +50,7 @@ $(function() {
     for (var i in this.folders[folderName]) {
       k = this.folders[folderName][i];
       photoRow = $('<tr></tr>', {'class': 'photo-name clickable'});
-      photoRow.html('<td>' + this.ps[k].title + '</td>');
+      photoRow.html('<td>' + this.ps[k].title + '</td><td><em>' + this.ps[k].date + '</em></td>');
       if (! this.shown[k]) {
         photoRow.addClass('error');
         photoRow.removeClass('clickable');
