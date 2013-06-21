@@ -47,15 +47,8 @@ $(function() {
       }
     }
 
-    var sortedIndexes = [];
-    for (var i in this.folders[folderName]) {
-      k = this.folders[folderName][i];
-      sortedIndexes.push({index: k, title: this.ps[k].title});
-    }
-    sortedIndexes.sort(function(a, b) {return parseInt(a.title.slice(0, 2)) > parseInt(b.title.slice(0, 2));});
-
-    for (var i in sortedIndexes) {
-      k = sortedIndexes[i].index;
+    for (var i in this.sortedIndexes[folderName]) {
+      k = this.sortedIndexes[folderName][i].index;
       photoRow = $('<tr></tr>', {'class': 'photo-name clickable'});
       photoRow.html('<td>' + this.ps[k].title + '</td><td><em>' + this.ps[k].date + '</em></td>');
       if (! this.shown[k]) {
@@ -95,7 +88,7 @@ $(function() {
     var photoRow = $(event.target);
     var photoRowIndex = photoRow.parent().index();
     var folderName = $('#navigation-folders-list').children('.active').children().html();
-    var markerIndex = this.folders[folderName][photoRowIndex];
+    var markerIndex = this.sortedIndexes[folderName][photoRowIndex].index;
     this.markers[markerIndex].openPopup();
   };
 
@@ -142,6 +135,7 @@ $(function() {
     this.shown = [];
     this.folders = {};
     this.folderNames = [];
+    this.sortedIndexes = [];
 
     for (var i = 0; i < this.l; i++) {
       p = response.photos[i];
@@ -173,13 +167,19 @@ $(function() {
 
       if (! this.folders.hasOwnProperty(p.folder)) {
         this.folders[p.folder] = [];
+        this.sortedIndexes[p.folder] = [];
         this.folderNames.push(p.folder);
       }
       this.folders[p.folder].push(i);
+      this.sortedIndexes[p.folder].push({index: i, title: p.title});
+    }
+
+    this.folderNames.sort();
+    for (var i in this.folderNames) {
+      this.sortedIndexes[this.folderNames[i]].sort(function(a, b) {return parseInt(a.title.slice(0, 2)) > parseInt(b.title.slice(0, 2));});
     }
 
     // Fill up the folders and photos
-    this.folderNames.sort();
     var folderList = $('#navigation-folders-list'),
         folderItem;
     for (var i in this.folderNames) {
