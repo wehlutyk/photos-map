@@ -150,7 +150,7 @@ $(function() {
       }
 
       marker = L.marker([p.latitude, p.longitude],
-        {opacity: 0.8, riseOnHover: true}).addTo(this.map);
+        {opacity: 0.8, riseOnHover: true, title: p.title}).addTo(this.map);
       marker.bindPopup(
         '<h3>' + p.title + '</h3>' +
         '<p><strong>' + p.date + '</strong> ' +

@@ -1,8 +1,7 @@
 #!/bin/bash
 # build_data photos-directory
 
-# TODO: deal with videos, and rotation of photos
-# TODO: add dates
+# TODO: deal with videos
 
 if [ $# != 1 ]
 then
