@@ -126,7 +126,7 @@ $(function() {
     }).addTo(this.map);
 
     // Add all markers
-    var p, marker,
+    var p, marker, imageFormat,
         sum_latitudes = 0,
         sum_longitudes = 0;
     this.l = response.photos.length,
@@ -143,13 +143,19 @@ $(function() {
       sum_latitudes += p.latitude;
       sum_longitudes += p.longitude;
 
+      if (p.rotation) {
+        imageFormat = ' height="400" width="300"';
+      } else {
+        imageFormat = ' height="300" width="400"';
+      }
+
       marker = L.marker([p.latitude, p.longitude],
         {opacity: 0.8, riseOnHover: true}).addTo(this.map);
       marker.bindPopup(
         '<h3>' + p.title + '</h3>' +
         '<p><strong>' + p.date + '</strong> ' +
         '— <em>In folder <a href="' + p.folder + '">' + p.folder + '</a></em></p>' +
-        '<p><a href="' + p.url_small + '">' + '<img src="' + p.url_preview + '" height="300" width="400" alt="' + p.title + '" /></a></p>' +
+        '<p><a href="' + p.url_small + '">' + '<img src="' + p.url_preview + '"' + imageFormat + ' alt="' + p.title + '" /></a></p>' +
         '<p><em>View in <a href="' + p.url_small + '">small size (' + p.size_small + ')</a>, ' +
         '<a href="' + p.url_full + '">full size (' + p.size_full + ')</a></em></p>',
         {maxWidth: 500}
@@ -182,6 +188,6 @@ $(function() {
     this.onCloseDateFrom($('#date-from').val());
     this.onCloseDateUntil($('#date-until').val());
   }).fail(function() {
-    alert("Oops, there was an error downloading the photo data... Are you well connected to the internet?")}
+    alert("Oops, there was an error downloading the photo data...")}
   );
 });

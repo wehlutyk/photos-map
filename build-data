@@ -50,6 +50,22 @@ do
   extension="${filename##*.}"
   subdirectory="${directory#$PHOTOS_ROOT}"
   size="$(exiftool -ImageSize "$f" | awk '{print $4}')px"
+  height="$(exiftool -ImageHeight "$f" | awk '{print $4}')"
+  width="$(exiftool -ImageWidth "$f" | awk '{print $4}')"
+
+  if exiftool -Orientation "$f" | grep -q Rotate
+  then
+    mogrify -auto-orient "$f"
+  fi
+
+  if [ $height -gt $width ]
+  then
+    previewsize=300x400
+    rotation=1
+  else
+    previewsize=400x300
+    rotation=0
+  fi
 
   smalldirectory="$PHOTOS_SMALL_ROOT$subdirectory"
   smallf="$smalldirectory/$filetitle.small.$extension"
@@ -60,7 +76,7 @@ do
   previewdirectory="$PHOTOS_PREVIEW_ROOT$subdirectory"
   previewf="$previewdirectory/$filetitle.preview.$extension"
   mkdir -p "$previewdirectory"
-  convert "$f" -resize 400x300 "$previewf"
+  convert "$f" -resize $previewsize "$previewf"
 
   latitude="$(exiftool -GPSLatitude -c "+%.6f" "$f" | awk '{print $4}')"
   latitude=${latitude#+}
@@ -85,6 +101,7 @@ do
   echo "            \"folder\": \"$directory\"," >> "$OUT"
   echo "            \"latitude\": $latitude," >> "$OUT"
   echo "            \"longitude\": $longitude," >> "$OUT"
+  echo "            \"rotation\": $rotation," >> "$OUT"
   echo "            \"date\": \"$date\"" >> "$OUT"
   echo -n "        }" >> "$OUT"
 
