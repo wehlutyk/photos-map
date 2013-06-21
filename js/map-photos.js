@@ -47,8 +47,15 @@ $(function() {
       }
     }
 
+    var sortedIndexes = [];
     for (var i in this.folders[folderName]) {
       k = this.folders[folderName][i];
+      sortedIndexes.push({index: k, title: this.ps[k].title});
+    }
+    sortedIndexes.sort(function(a, b) {return parseInt(a.title.slice(0, 2)) > parseInt(b.title.slice(0, 2));});
+
+    for (var i in sortedIndexes) {
+      k = sortedIndexes[i].index;
       photoRow = $('<tr></tr>', {'class': 'photo-name clickable'});
       photoRow.html('<td>' + this.ps[k].title + '</td><td><em>' + this.ps[k].date + '</em></td>');
       if (! this.shown[k]) {
