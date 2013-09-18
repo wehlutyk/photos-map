@@ -77,10 +77,22 @@ do
   mkdir -p "$previewdirectory"
   convert "$f" -resize $previewsize "$previewf"
 
-  latitude="$(exiftool -GPSLatitude -c "+%.6f" "$f" | awk '{print $4}')"
-  latitude=${latitude#+}
-  longitude="$(exiftool -GPSLongitude -c "+%.6f" "$f" | awk '{print $4}')"
-  longitude=${longitude#+}
+  NSedLatitude="$(exiftool -GPSLatitude -c "+%.6f" "$f" | awk '{print $4,$5}')"
+  NSedLatitude=${NSedLatitude#+}
+  latitude=$(echo $NSedLatitude | awk '{print $1}')
+  latSign=$(echo $NSedLatitude | awk '{print $2}')
+  if [ x"$latSign" = "xS" ]
+  then
+    latitude=-$latitude
+  fi
+  NSedLongitude="$(exiftool -GPSLongitude -c "+%.6f" "$f" | awk '{print $4,$5}')"
+  NSedLongitude=${NSedLongitude#+}
+  longitude=$(echo $NSedLongitude | awk '{print $1}')
+  lonSign=$(echo $NSedLongitude | awk '{print $2}')
+  if [ x"$lonSign" = "xW" ]
+  then
+    longitude=-$longitude
+  fi
   date="$(exiftool -DateTimeOriginal "$f" | awk {'print $4'} | sed 's_\([0-9]\+\):\([0-9]\+\):\([0-9]\+\)_\3/\2/\1_')"
 
   if [ $setcomma -eq 1 ]
